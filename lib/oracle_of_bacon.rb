@@ -39,14 +39,14 @@ class OracleOfBacon
       Net::ProtocolError => e
       # convert all of these into a generic OracleOfBacon::NetworkError,
       #  but keep the original error message
-      # your code here
+      raise(OracleOfBacon::NetworkError, e)
     end
     # your code here: create the OracleOfBacon::Response object
+    OracleOfBacon::Response.new(xml)
   end
 
   def make_uri_from_arguments
-    # your code here: set the @uri attribute to properly-escaped URI
-    #   constructed from the @from, @to, @api_key arguments
+    @uri = "http://oracleofbacon.org/cgi-bin/xml?p=#{@api_key}?a=#{CGI.escape(@from)}?b=#{CGI.escape(@to)}"
   end
 
   class Response
@@ -77,14 +77,10 @@ class OracleOfBacon
     def parse_graph_response
       @type = :graph
       @data = @doc.xpath('//actor').zip(@doc.xpath('//movie')).flatten.compact.map { |e| e.text }
-      debugger
-      x = 12
     end
     def parse_spellcheck_response
       @type = :spellcheck
       @data = @doc.xpath('//match').map { |e| e.text }
-      debugger
-      x = 12
     end
     def parse_error_response
       @type = :error
