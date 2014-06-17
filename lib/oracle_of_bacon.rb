@@ -11,8 +11,8 @@ class OracleOfBacon
   class InvalidKeyError < RuntimeError ; end
 
   attr_accessor :from, :to
-  attr_reader :api_key, :response, :uri
-  
+  attr_reader :api_key, :response, :uri, :errors
+
   include ActiveModel::Validations
   validates_presence_of :from
   validates_presence_of :to
@@ -20,11 +20,14 @@ class OracleOfBacon
   validate :from_does_not_equal_to
 
   def from_does_not_equal_to
-    # YOUR CODE HERE
+    errors.add(:from, 'From cannot be the same value as To') if self.from == self.to
   end
 
   def initialize(api_key='')
-    # your code here
+    @from    = 'Kevin Bacon'
+    @to      = 'Kevin Bacon'
+    @api_key = api_key
+    @errors = ActiveModel::Errors.new(self)
   end
 
   def find_connections
@@ -45,7 +48,7 @@ class OracleOfBacon
     # your code here: set the @uri attribute to properly-escaped URI
     #   constructed from the @from, @to, @api_key arguments
   end
-      
+
   class Response
     attr_reader :type, :data
     # create a Response object from a string of XML markup.
@@ -61,8 +64,27 @@ class OracleOfBacon
         parse_error_response
       # your code here: 'elsif' clauses to handle other responses
       # for responses not matching the 3 basic types, the Response
-      # object should have type 'unknown' and data 'unknown response'         
+      # object should have type 'unknown' and data 'unknown response'
+      elsif ! @doc.xpath('/link').empty?
+        parse_graph_response
+      elsif ! @doc.xpath('/spellcheck').empty?
+        parse_spellcheck_response
+      else
+        @type = :unknown
+        @data = 'unknown response type'
       end
+    end
+    def parse_graph_response
+      @type = :graph
+      @data = @doc.xpath('//actor').zip(@doc.xpath('//movie')).flatten.compact.map { |e| e.text }
+      debugger
+      x = 12
+    end
+    def parse_spellcheck_response
+      @type = :spellcheck
+      @data = @doc.xpath('//match').map { |e| e.text }
+      debugger
+      x = 12
     end
     def parse_error_response
       @type = :error
@@ -70,4 +92,3 @@ class OracleOfBacon
     end
   end
 end
-

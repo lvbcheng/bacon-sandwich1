@@ -61,7 +61,7 @@ the code to make it pass.)
 You can experiment with the XML API at [this test
 page](http://oracleofbacon.org/xmltest.html), but you will need to
 provide an API key.  The key provided for using the API in this course
-is in the picture below, to avoid having it indexed by search engines:
+is in the picture below (38b99ce9ec87), to avoid having it indexed by search engines:
 
 ![Image of API key](oob_api_key.png)
 
