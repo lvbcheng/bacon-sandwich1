@@ -1,6 +1,8 @@
 The Oracle of Bacon
 ===================
 
+Today is Wednesday, June 25.
+
 The goals of this assignment are as follows:
 
 1. Give you more exposure to RSpec and to more advanced and idiomatic
